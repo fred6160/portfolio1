@@ -297,11 +297,11 @@
   .entry-org { font-family: var(--sans); font-size: .9rem; color: var(--slate); margin-top: .2rem; }
   .entry-when + div > p:first-child { margin-top: 0; }
   .entry ul { margin-top: .85rem; }
-  .entry li { position: relative; padding-left: 1.15rem; color: var(--slate); }
+  .entry li { position: relative; padding-left: 1.25rem; color: var(--slate); }
   .entry li + li { margin-top: .5rem; }
   .entry li::before {
-    content: ""; position: absolute; left: 0; top: .72em;
-    width: 5px; height: 1px; background: var(--mute);
+    content: "•"; position: absolute; left: 0; top: 0;
+    color: var(--signal); font-size: 1rem; line-height: 1.45;
   }
   .entry-when small {
     display: block; font-size: .78rem; margin-top: .25rem;
@@ -318,9 +318,12 @@
   .paper-venue { font-family: var(--sans); font-size: .85rem; color: var(--signal-deep); font-weight: 600; margin-top: .45rem; }
   .paper p { margin-top: 1rem; color: var(--slate); max-width: 68ch; }
   .paper ul { margin-top: 1rem; }
-  .paper li { position: relative; padding-left: 1.15rem; color: var(--slate); }
+  .paper li { position: relative; padding-left: 1.25rem; color: var(--slate); }
   .paper li + li { margin-top: .5rem; }
-  .paper li::before { content: ""; position: absolute; left: 0; top: .72em; width: 5px; height: 1px; background: var(--mute); }
+  .paper li::before {
+    content: "•"; position: absolute; left: 0; top: 0;
+    color: var(--signal); font-size: 1rem; line-height: 1.45;
+  }
 
   /* ── Projects ────────────────────────────────────────── */
   .projects { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
@@ -365,8 +368,11 @@
 
   /* ── Certifications ──────────────────────────────────── */
   .certs { columns: 2 240px; column-gap: 2.5rem; }
-  .certs li { break-inside: avoid; padding: .55rem 0 .55rem 1.15rem; position: relative; color: var(--slate); font-size: .97rem; border-bottom: 1px solid var(--line-soft); }
-  .certs li::before { content: ""; position: absolute; left: 0; top: 1.05em; width: 5px; height: 1px; background: var(--mute); }
+  .certs li { break-inside: avoid; padding: .55rem 0 .55rem 1.25rem; position: relative; color: var(--slate); font-size: .97rem; border-bottom: 1px solid var(--line-soft); }
+  .certs li::before {
+    content: "•"; position: absolute; left: 0; top: .62em;
+    color: var(--signal); font-size: 1rem; line-height: 1;
+  }
   .certs strong { color: var(--ink); font-weight: 600; font-family: var(--sans); font-size: .93rem; }
 
   /* ── Contact ─────────────────────────────────────────── */
@@ -383,6 +389,22 @@
     font-family: var(--sans); font-size: .82rem; color: var(--mute);
     display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between;
   }
+
+  .back-to-top {
+    position: fixed; right: 1rem; bottom: 1rem; z-index: 50;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.8rem; height: 2.8rem; border: 1px solid rgba(14, 79, 168, 0.2);
+    border-radius: 999px; background: rgba(255, 255, 255, 0.96);
+    color: var(--signal-deep); box-shadow: 0 8px 22px rgba(16, 21, 28, 0.12);
+    opacity: 0; visibility: hidden; transform: translateY(10px);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
+    cursor: pointer;
+  }
+  .back-to-top.visible {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .back-to-top:hover { background: var(--signal-wash); text-decoration: none; }
+  .back-to-top:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
 
   /* ── Small screens ───────────────────────────────────── */
   @media (max-width: 560px) {
@@ -847,15 +869,37 @@
   </main>
 </div>
 
+<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18V6M6 12l6-6 6 6" /></svg>
+</button>
+
 <script>
   var shell = document.querySelector('.shell');
   var rail = document.querySelector('.rail');
   var railToggle = document.querySelector('.rail-toggle');
   var railOpen = document.querySelector('.rail-open');
   var progress = document.querySelector('.reading-progress');
+  var backToTopButton = document.getElementById('back-to-top');
   var sidebarStorageKey = 'fredrick-sidebar-collapsed';
 
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  if (backToTopButton) {
+    function toggleBackToTop() {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
+    }
+
+    backToTopButton.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', toggleBackToTop, { passive: true });
+    toggleBackToTop();
+  }
 
   var emailButton = document.getElementById('email-me');
   if (emailButton) {
